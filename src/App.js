@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
@@ -9,6 +9,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
+                <Route index path="/" element={<Navigate to="login" />} />
                 <Route index path="/login" element={<Login />} />
                 <Route
                     path="/dashboard"
