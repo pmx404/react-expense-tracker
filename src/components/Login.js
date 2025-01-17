@@ -11,6 +11,7 @@ const AuthComponent = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate()
     const [error, setError] = useState('');
+    const [userName, setUserName] = useState('')
 
     // Function to handle user sign-in
     const handleSignIn = async () => {
@@ -18,6 +19,7 @@ const AuthComponent = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             localStorage.setItem('authToken', 'true');
+            localStorage.setItem('token', auth.currentUser.accessToken);
             navigate('/dashboard'); // Redirect to dashboard after login
         } catch (err) {
             setError(err.message);
@@ -30,6 +32,7 @@ const AuthComponent = () => {
 
         try {
             await createUserWithEmailAndPassword(auth, email, password);
+            localStorage.setItem('userName', userName);
             alert("Sign-up successful!");
         } catch (err) {
             setError(err.message);
@@ -59,7 +62,7 @@ const AuthComponent = () => {
                     <button className='login-btn' onClick={handleSignIn}>Sign In</button>
                     <p className='heading-text'>
                         Don't have an account?{' '}
-                        <span onClick={() => setIsLogin(false)}>Register User</span>
+                        <button className='disclaimer' onClick={() => setIsLogin(false)}>Register User</button>
                         {error && <p>{error}</p>}
                     </p>
                 </div>
@@ -67,6 +70,15 @@ const AuthComponent = () => {
                 <div id="signup-form" className='login-container'>
                     <h1 className='heading-text'>Expense Tracker</h1>
                     <h2 className='heading-text'>Register User</h2>
+
+                    <input className='userName-field'
+                        type="text"
+                        placeholder="Username"
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        required
+                    />
+
                     <input className='email-field'
                         type="text"
                         placeholder="Email"
@@ -84,7 +96,7 @@ const AuthComponent = () => {
                     <button className='login-btn' onClick={handleSignUp}>Sign Up</button>
                     <p className='heading-text' >
                         Already have an account?{' '}
-                        <span onClick={() => setIsLogin(true)}>Sign In</span>
+                        <button className='disclaimer' onClick={() => setIsLogin(true)}>Sign In</button>
                     </p>
                 </div>
             )}
