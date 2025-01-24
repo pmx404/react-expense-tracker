@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Assuming you're using react-router for navigation
+import Button from '@mui/material/Button';
 
 const Logout = () => {
     const history = useNavigate();
@@ -12,10 +13,9 @@ const Logout = () => {
         // Redirect to the login page or home page
         history('/login'); // Change the path as needed
     };
-
     return (
         <div>
-            <button onClick={handleLogout}>Logout</button>
+            <Button variant="contained" size='small' onClick={handleLogout}>Logout</Button>
         </div>
     );
 };

@@ -1,0 +1,12 @@
+.categoryCard {
+  width: 40%;
+  height: 20rem;
+}
+
+.main-content {
+  /* display: flex;
+  flex-direction: row;
+  row-gap: 100px; */
+  background-color: red;
+  /* justify-content: space-between; */
+}
