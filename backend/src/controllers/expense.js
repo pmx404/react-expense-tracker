@@ -54,18 +54,16 @@ export const getAllExpenses = async (req, res) => {
   }
 };
 
-// 
+// update expense based on id
 export const updateExpense = async (req, res) => {
   const { error } = exepenseSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message });
-  // const { title, amount, category, date, user } = req.body;
   const { title, amount, category, date } = req.body;
 
   res.expense.title = title
   res.expense.amount = amount;
   res.expense.category = category;
   res.expense.date = date;
-  // res.expense.user = user;
 
   try {
     const updatedExpense = await res.expense.save();
@@ -75,10 +73,14 @@ export const updateExpense = async (req, res) => {
   }
 }
 
-// delete expense
+// delete expense based on id
 export const deleteExpense = async (req, res) => {
   try {
-    await res.expense.remove();
+    const id = res.expense._id
+    const deletedExpense = await Expense.deleteOne(id);
+    if (!deletedExpense.acknowledged) {
+      res.status(400).json({ message: 'expense not found' });
+    }
     res.json({ message: 'Deleted Expense' });
   } catch (err) {
     console.log('test', err)

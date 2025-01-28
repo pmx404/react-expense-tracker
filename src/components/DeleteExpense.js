@@ -1,11 +1,11 @@
 import React from "react";
 import { deleteExpense } from "../services/api";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const DeleteExpense = ({ expenseId, onClose, fetchExpenses }) => {
     const handleDelete = async () => {
         try {
-            const token = localStorage.getItem("token");
-            await deleteExpense(expenseId, token);
+            const response = await axios.delete(`${API_URL}/api/expense/${expenseId}`)
             fetchExpenses();
             onClose(); // Close the delete confirmation
         } catch (err) {

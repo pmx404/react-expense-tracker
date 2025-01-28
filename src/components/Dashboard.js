@@ -5,8 +5,6 @@ import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddIcon from '@mui/icons-material/Add';
 import CategoryIcon from '@mui/icons-material/Category';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
@@ -14,10 +12,15 @@ import AddExpense from './AddExpense'
 import '../styles/Dashboard.css'
 import MyChart from './Chart';
 import Logout from './Logout';
-import { Container, Paper, Card } from '@mui/material';
-// import EditExpense from './EditExpense';
-import { useState } from 'react';
 import ExpensesList from './ListExpenses';
+
+const categories = [
+    { value: 'food', label: 'Food' },
+    { value: 'transport', label: 'Transport' },
+    { value: 'entertainment', label: 'Entertainment' },
+    { value: 'utilities', label: 'Utilities' },
+    { value: 'other', label: 'Other' }
+];
 
 
 const NAVIGATION = [
@@ -39,17 +42,7 @@ const NAVIGATION = [
                 segment: 'add',
                 title: 'Add Expense',
                 icon: <AddIcon />,
-            },
-            {
-                segment: 'edit',
-                title: 'Edit Expense',
-                icon: <EditIcon />,
-            },
-            {
-                segment: 'delete',
-                title: 'Delete Expense',
-                icon: <DeleteIcon />,
-            },
+            }
         ],
     },
 ];
@@ -78,15 +71,13 @@ function DemoPageContent({ pathname }) {
                 px: 10,
                 display: 'flex',
                 flexDirection: 'row',
-                // rowGap: 10,
-                columnGap: 30,
+                columnGap: 10,
                 alignItems: 'center',
                 textAlign: 'center'
             }}
         >
-            {pathname === '/dashboard' ? <> <Card elevation={15} className='categoryCard'><MyChart /></Card> <Card elevation={15} className='categoryCard'> <ExpensesList /></Card> </> : null}
-            {pathname === '/action-items/add' ? <AddExpense /> : null}
-            {/* {pathname === '/action-items/edit' ? <EditExpense /> : null} */}
+            {pathname === '/dashboard' ? <> < div className='categoryCard'><MyChart categories={categories} /></div> <div className='expenses-table'> <ExpensesList /> </div> </> : null}
+            {pathname === '/action-items/add' ? <AddExpense categories={categories} /> : null}
         </Box>
     );
 }

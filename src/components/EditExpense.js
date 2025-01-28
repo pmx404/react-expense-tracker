@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const EditExpense = ({ expense, onClose, fetchExpenses }) => {
-    // const [title, setTitle] = useState(expense.title || "");
-    // const [amount, setAmount] = useState(expense.amount || "");
-    // const [category, setCategory] = useState(expense.category || "");
-    // const [date, setDate] = useState(expense.date || "");
-
-    const [title, setTitle] = useState(expense || "");
-    const [amount, setAmount] = useState(expense || "");
-    const [category, setCategory] = useState(expense || "");
-    const [date, setDate] = useState(expense || "");
+    const [title, setTitle] = useState(expense.title || "");
+    const [amount, setAmount] = useState(expense.amount || "");
+    const [category, setCategory] = useState(expense.category || "");
+    const [date, setDate] = useState(expense.date || "");
 
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -18,8 +13,9 @@ const EditExpense = ({ expense, onClose, fetchExpenses }) => {
         e.preventDefault();
 
         try {
-            ///await axios.post(`${API_URL}/expense/${id}`, { title, amount, category, date });
-            //fetchExpenses();
+            const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date });
+            console.log(response);
+            fetchExpenses();
             onClose(); // Close the edit modal
         } catch (err) {
             console.error("Error updating expense:", err.message);
