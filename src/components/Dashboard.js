@@ -1,88 +1,129 @@
-// import { Pie } from 'react-chartjs-2';
+import * as React from 'react';
+import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import { createTheme } from '@mui/material/styles';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AddIcon from '@mui/icons-material/Add';
+import CategoryIcon from '@mui/icons-material/Category';
+import { AppProvider } from '@toolpad/core/AppProvider';
+import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+import { useDemoRouter } from '@toolpad/core/internal';
+import AddExpense from './AddExpense'
+import '../styles/Dashboard.css'
+import MyChart from './Chart';
+import Logout from './Logout';
+import ExpensesList from './ListExpenses';
 
-// const data = {
-//     labels: ['Rent', 'Groceries', 'Utilities'],
-//     datasets: [
-//         {
-//             data: [500, 200, 150],
-//             backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-//         },
-//     ],
-// };
+const categories = [
+    { value: 'food', label: 'Food' },
+    { value: 'transport', label: 'Transport' },
+    { value: 'entertainment', label: 'Entertainment' },
+    { value: 'utilities', label: 'Utilities' },
+    { value: 'other', label: 'Other' }
+];
 
-// const ExpenseChart = () => <Pie data={data} />;
-// export default ExpenseChart;
 
-// import React, { useState } from 'react';
+const NAVIGATION = [
+    {
+        kind: 'header',
+        title: 'Main items',
+    },
+    {
+        segment: 'dashboard',
+        title: 'Dashboard',
+        icon: <DashboardIcon />,
+    },
+    {
+        segment: 'action-items',
+        title: 'Action-items',
+        icon: <CategoryIcon />,
+        children: [
+            {
+                segment: 'add',
+                title: 'Add Expense',
+                icon: <AddIcon />,
+            }
+        ],
+    },
+];
 
-// const Dashboard = () => {
-//     const [expenses, setExpenses] = useState([]); // State to store expenses
-//     const [description, setDescription] = useState(''); // State for expense description
-//     const [amount, setAmount] = useState(''); // State for expense amount
+const demoTheme = createTheme({
+    cssVariables: {
+        colorSchemeSelector: 'data-toolpad-color-scheme',
+    },
+    colorSchemes: { light: true },
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 600,
+            lg: 1200,
+            xl: 1536,
+        },
+    },
+});
 
-//     // Function to add an expense
-//     const addExpense = (event) => {
-//         event.preventDefault(); // Prevent default form submission
-
-//         // Create a new expense object
-//         const newExpense = {
-//             description,
-//             amount: parseFloat(amount),
-//         };
-
-//         // Update the expenses state
-//         setExpenses([...expenses, newExpense]);
-
-//         // Clear the input fields
-//         setDescription('');
-//         setAmount('');
-//     };
-
-//     // Calculate total expenses
-//     const totalExpenses = expenses.reduce((total, expense) => total + expense.amount, 0);
-
-//     return (
-//         <div id="dashboard-container">
-//             <h1>Expense Tracker Dashboard</h1>
-//             <form onSubmit={addExpense}>
-//                 <input
-//                     type="text"
-//                     placeholder="Description"
-//                     value={description}
-//                     onChange={(e) => setDescription(e.target.value)}
-//                     required
-//                 />
-//                 <input
-//                     type="number"
-//                     placeholder="Amount"
-//                     value={amount}
-//                     onChange={(e) => setAmount(e.target.value)}
-//                     required
-//                 />
-//                 <button type="submit">Add Expense</button>
-//             </form>
-//             <h2>Expenses</h2>
-//             <ul>
-//                 {expenses.map((expense, index) => (
-//                     <li key={index}>
-//                         {expense.description}: ${expense.amount.toFixed(2)}
-//                     </li>
-//                 ))}
-//             </ul>
-//             <h3>Total Expenses: ${totalExpenses.toFixed(2)}</h3>
-//         </div>
-//     );
-// };
-
-// export default Dashboard;
-
-const Dashboard = () => {
-
+function DemoPageContent({ pathname }) {
     return (
-        <div>
-            <h1> Welcome to REACT</h1>
-        </div>
-    )
+        <Box
+            sx={{
+                py: 4,
+                px: 10,
+                display: 'flex',
+                flexDirection: 'row',
+                columnGap: 10,
+                alignItems: 'center',
+                textAlign: 'center'
+            }}
+        >
+            {pathname === '/dashboard' ? <> < div className='categoryCard'><MyChart categories={categories} /></div> <div className='expenses-table'> <ExpensesList /> </div> </> : null}
+            {pathname === '/action-items/add' ? <AddExpense categories={categories} /> : null}
+        </Box>
+    );
 }
 
-export default Dashboard
+DemoPageContent.propTypes = {
+    pathname: PropTypes.string.isRequired,
+};
+
+function DashboardLayoutBasic(props) {
+
+    const { window } = props;
+    const router = useDemoRouter('/dashboard');
+
+    // Remove this const when copying and pasting into your project.
+    const demoWindow = window !== undefined ? window() : undefined;
+
+    return (
+        // preview-start
+        <AppProvider
+            navigation={NAVIGATION}
+            branding={{
+                logo: <img />,
+                title: 'Expense Tracker',
+            }}
+            router={router}
+            theme={demoTheme}
+            window={demoWindow}
+        >
+
+            <DashboardLayout
+                slots={{
+                    toolbarActions: Logout,
+                }}>
+                <DemoPageContent pathname={router.pathname} />
+            </DashboardLayout>
+        </AppProvider>
+        // preview-end
+    );
+}
+
+DashboardLayoutBasic.propTypes = {
+    /**
+     * Injected by the documentation to work in an iframe.
+     * Remove this when copying and pasting into your project.
+     */
+    window: PropTypes.func,
+};
+
+export default DashboardLayoutBasic;
