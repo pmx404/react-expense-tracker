@@ -76,7 +76,7 @@ function DemoPageContent({ pathname }) {
                 textAlign: 'center'
             }}
         >
-            {pathname === '/dashboard' ? <> < div className='categoryCard'><MyChart categories={categories} /></div> <div className='expenses-table'> <ExpensesList /> </div> </> : null}
+            {pathname === '/dashboard' ? <> < div className='categoryCard'><MyChart /></div> <div className='expenses-table'> <ExpensesList /> </div> </> : null}
             {pathname === '/action-items/add' ? <AddExpense categories={categories} /> : null}
         </Box>
     );
