@@ -4,13 +4,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import '../styles/Dashboard.css';
 import EditExpense from './EditExpense';
+import DeleteExpense from './DeleteExpense';
 
 const ExpensesList = () => {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedExpenseId, setSelectedExpenseId] = useState(null);
+
+    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+    const [selectedDeleteExpenseId, setSelectedDeleteExpenseId] = useState(null);
 
     const API_URL = process.env.REACT_APP_API_URL;
 
@@ -22,16 +27,6 @@ const ExpensesList = () => {
             setError("Failed to fetch expenses.");
         } finally {
             setLoading(false);
-        }
-    };
-
-    const deleteExpense = async (id) => {
-        try {
-            await axios.delete(`${API_URL}/api/expense/${id}`);
-            await fetchExpenses();
-            alert("Expense deleted successfully.");
-        } catch (error) {
-            setError("Failed to delete expense.");
         }
     };
 
@@ -47,6 +42,17 @@ const ExpensesList = () => {
     const closePopup = () => {
         setIsPopupOpen(false);
         setSelectedExpenseId(null);
+    };
+
+    const deletePopupOpen = (expense) => {
+
+        setSelectedDeleteExpenseId(expense._id);
+        setIsDeletePopupOpen(true);
+    };
+
+    const closeDeletePopup = () => {
+        setIsDeletePopupOpen(false);
+        setSelectedDeleteExpenseId(null);
     };
 
     useEffect(() => {
@@ -71,7 +77,6 @@ const ExpensesList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {console.log(expenses)}
                     {expenses.map((expense, index) => (
                         <tr key={expense._id}>
 
@@ -84,7 +89,7 @@ const ExpensesList = () => {
                                 <button onClick={() => openPopup(expense)} className="edit-btn">
                                     <EditIcon fontSize="small" />
                                 </button>
-                                <button onClick={() => deleteExpense(expense._id)} className="delete-btn">
+                                <button onClick={() => deletePopupOpen(expense)} className="delete-btn">
                                     <DeleteIcon fontSize="small" />
                                 </button>
                             </td>
@@ -98,6 +103,15 @@ const ExpensesList = () => {
                         expense={getExpenseById(selectedExpenseId)}
                         fetchExpenses={fetchExpenses}
                         onClose={closePopup}
+                    />
+                </div>
+            )}
+            {isDeletePopupOpen && (
+                <div className="popup">
+                    <DeleteExpense
+                        expense={getExpenseById(selectedDeleteExpenseId)}
+                        fetchExpenses={fetchExpenses}
+                        onClose={closeDeletePopup}
                     />
                 </div>
             )}

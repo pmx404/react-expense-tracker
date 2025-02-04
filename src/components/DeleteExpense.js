@@ -1,11 +1,12 @@
 import React from "react";
-import { deleteExpense } from "../services/api";
+import axios from "axios";
+import '../styles/Dashboard.css'
 const API_URL = process.env.REACT_APP_API_URL;
 
-const DeleteExpense = ({ expenseId, onClose, fetchExpenses }) => {
+const DeleteExpense = ({ expense, onClose, fetchExpenses }) => {
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`${API_URL}/api/expense/${expenseId}`)
+            const response = await axios.delete(`${API_URL}/api/expense/${expense._id}`)
             fetchExpenses();
             onClose(); // Close the delete confirmation
         } catch (err) {
@@ -17,8 +18,8 @@ const DeleteExpense = ({ expenseId, onClose, fetchExpenses }) => {
         <div className="modal">
             <div className="modal-content">
                 <h3>Are you sure you want to delete this expense?</h3>
-                <button onClick={handleDelete}>Yes, Delete</button>
-                <button onClick={onClose}>Cancel</button>
+                <button className="submit-btn" onClick={handleDelete}>Yes, Delete</button>
+                <button className="cancel-btn" onClick={onClose}>Cancel</button>
             </div>
         </div>
     );

@@ -20,7 +20,6 @@ export const signup = async (req, res, next) => {
 };
 
 export const signIn = async (req, res, next) => {
-  console.log('Hiiiiiii');
 
   const { email, password } = req.body;
   try {

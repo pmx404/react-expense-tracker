@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import '../styles/Dashboard.css'
+import { Typography } from "@mui/material";
 
 const EditExpense = ({ expense, onClose, fetchExpenses }) => {
     const [title, setTitle] = useState(expense.title || "");
@@ -14,7 +16,6 @@ const EditExpense = ({ expense, onClose, fetchExpenses }) => {
 
         try {
             const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date });
-            console.log(response);
             fetchExpenses();
             onClose(); // Close the edit modal
         } catch (err) {
@@ -24,9 +25,9 @@ const EditExpense = ({ expense, onClose, fetchExpenses }) => {
 
     return (
         <div className="modal">
-            <div className="modal-content">
-                <h3>Edit Expense</h3>
-                <form onSubmit={handleSubmit}>
+            <div>
+                <Typography>Edit Expense</Typography>
+                <form className="modal-content" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         placeholder="Title"
@@ -55,8 +56,8 @@ const EditExpense = ({ expense, onClose, fetchExpenses }) => {
                         onChange={(e) => setDate(e.target.value)}
                         required
                     />
-                    <button type="submit">Update Expense</button>
-                    <button type="button" onClick={onClose}>Cancel</button>
+                    <button className="submit-btn" type="submit">Update Expense</button>
+                    <button className="cancel-btn" type="button" onClick={onClose}>Cancel</button>
                 </form>
             </div>
         </div>
