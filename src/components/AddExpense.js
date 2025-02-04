@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/Dashboard.css'
 
 const AddExpense = ({ categories }) => {
     const [expenses, setExpenses] = useState([]); // State to store expenses
@@ -43,13 +44,13 @@ const AddExpense = ({ categories }) => {
 
     return (
         <div id="dashboard-container">
-            <h1>Expense Tracker Dashboard</h1>
+            <h1 style={{ margin: '0px', padding: '0px' }}>Add Expense</h1>
 
             {/* Form for adding a new expense */}
-            <form onSubmit={addExpense}>
+            <form className='modal-content' onSubmit={addExpense}>
                 <input
                     type="text"
-                    placeholder="title"
+                    placeholder="Title"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
@@ -81,7 +82,7 @@ const AddExpense = ({ categories }) => {
                     onChange={(e) => setDate(e.target.value)}
                     required
                 />
-                <button type="submit">Add Expense</button>
+                <button onClick={() => alert('Expense added')} className='submit-btn' type="submit">Add Expense</button>
             </form>
 
             {/* Error message */}

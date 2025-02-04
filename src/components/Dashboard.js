@@ -13,6 +13,7 @@ import '../styles/Dashboard.css'
 import MyChart from './Chart';
 import Logout from './Logout';
 import ExpensesList from './ListExpenses';
+import Paper from '@mui/material/Paper';
 
 const categories = [
     { value: 'food', label: 'Food' },
@@ -34,17 +35,10 @@ const NAVIGATION = [
         icon: <DashboardIcon />,
     },
     {
-        segment: 'action-items',
-        title: 'Action-items',
-        icon: <CategoryIcon />,
-        children: [
-            {
-                segment: 'add',
-                title: 'Add Expense',
-                icon: <AddIcon />,
-            }
-        ],
-    },
+        segment: 'add',
+        title: 'Add Expense',
+        icon: <AddIcon />,
+    }
 ];
 
 const demoTheme = createTheme({
@@ -76,9 +70,46 @@ function DemoPageContent({ pathname }) {
                 textAlign: 'center'
             }}
         >
-            {pathname === '/dashboard' ? <> < div className='categoryCard'><MyChart /></div> <div className='expenses-table'> <ExpensesList /> </div> </> : null}
-            {pathname === '/action-items/add' ? <AddExpense categories={categories} /> : null}
-        </Box>
+            {pathname === '/dashboard' ?
+                <Paper
+                    elevation={6}
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-evenly',
+                        backgroundColor: '#EEF6F8',
+                        width: '110rem',
+                        height: 'fit-content',
+                        paddingBottom: '50px'
+                    }}
+                >
+                    < Paper
+                        elevation={15}
+                        sx={{
+                            width: 'fit-content',
+                            height: 'fit-content',
+                            padding: '25px',
+                            marginTop: '100px'
+                        }}
+                    >
+                        <MyChart />
+                    </Paper>
+                    <Paper
+                        elevation={15}
+                        sx={{
+                            width: 'fit-content',
+                            height: 'it-content',
+                            marginTop: '100px',
+                            padding: '25px',
+                        }}
+                        className='expenses-table'
+                    >
+                        <ExpensesList />
+                    </Paper>
+                </Paper > : null
+            }
+            {pathname === '/add' ? <AddExpense categories={categories} /> : null}
+        </Box >
     );
 }
 

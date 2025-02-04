@@ -54,7 +54,10 @@ const MyChart = () => {
         }
     }, [chartData]); // Run whenever chartData changes
 
-    return <Doughnut ref={chartRef} data={chartData} />;
+    return <>
+        <h2 style={{ padding: '0px', margin: '0px' }} >Expense Chart</h2>
+        <Doughnut ref={chartRef} data={chartData} />
+    </>;
 };
 
 export default MyChart;
