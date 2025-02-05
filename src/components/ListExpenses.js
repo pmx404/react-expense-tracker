@@ -1,35 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import '../styles/Dashboard.css';
 import EditExpense from './EditExpense';
 import DeleteExpense from './DeleteExpense';
 
-const ExpensesList = () => {
-    const [expenses, setExpenses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedExpenseId, setSelectedExpenseId] = useState(null);
 
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
     const [selectedDeleteExpenseId, setSelectedDeleteExpenseId] = useState(null);
-
-    const API_URL = process.env.REACT_APP_API_URL;
-
-    const fetchExpenses = async () => {
-        try {
-            const user = localStorage.getItem('userId')
-            const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
-            setExpenses(response.data);
-        } catch (error) {
-            setError("Failed to fetch expenses.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const getExpenseById = (id) => {
         return expenses.find(el => el._id === id)
@@ -55,13 +37,6 @@ const ExpensesList = () => {
         setIsDeletePopupOpen(false);
         setSelectedDeleteExpenseId(null);
     };
-
-    useEffect(() => {
-        fetchExpenses();
-    }, []);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="popup-overlay">
@@ -103,6 +78,7 @@ const ExpensesList = () => {
                     <EditExpense
                         expense={getExpenseById(selectedExpenseId)}
                         fetchExpenses={fetchExpenses}
+                        categories={categories}
                         onClose={closePopup}
                     />
                 </div>

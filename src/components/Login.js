@@ -19,7 +19,6 @@ const AuthComponent = () => {
         console.log("Signing in with:", email, password);
         try {
             const response = await axios.post(`${API_URL}/auth/signin`, { email, password });
-            console.log(response);
 
             if (response) {
                 localStorage.setItem('token', response.data.token);

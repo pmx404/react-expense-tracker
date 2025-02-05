@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AddIcon from '@mui/icons-material/Add';
-import CategoryIcon from '@mui/icons-material/Category';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDemoRouter } from '@toolpad/core/internal';
@@ -14,6 +13,8 @@ import MyChart from './Chart';
 import Logout from './Logout';
 import ExpensesList from './ListExpenses';
 import Paper from '@mui/material/Paper';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const categories = [
     { value: 'food', label: 'Food' },
@@ -58,6 +59,30 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }) {
+    const [expenses, setExpenses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const API_URL = process.env.REACT_APP_API_URL;
+
+    const fetchExpenses = async () => {
+        try {
+            const user = localStorage.getItem("userId");
+            const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
+            setExpenses(response.data);
+        } catch (error) {
+            setError("Failed to fetch expenses.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchExpenses();
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
     return (
         <Box
             sx={{
@@ -67,7 +92,7 @@ function DemoPageContent({ pathname }) {
                 flexDirection: 'row',
                 columnGap: 10,
                 alignItems: 'center',
-                textAlign: 'center'
+                textAlign: 'center',
             }}
         >
             {pathname === '/dashboard' ?
@@ -92,7 +117,7 @@ function DemoPageContent({ pathname }) {
                             marginTop: '100px'
                         }}
                     >
-                        <MyChart />
+                        <MyChart expenses={expenses} />
                     </Paper>
                     <Paper
                         elevation={15}
@@ -104,11 +129,11 @@ function DemoPageContent({ pathname }) {
                         }}
                         className='expenses-table'
                     >
-                        <ExpensesList />
+                        <ExpensesList categories={categories} expenses={expenses} fetchExpenses={fetchExpenses} />
                     </Paper>
                 </Paper > : null
             }
-            {pathname === '/add' ? <AddExpense categories={categories} /> : null}
+            {pathname === '/add' ? <AddExpense fetchExpenses={fetchExpenses} categories={categories} /> : null}
         </Box >
     );
 }
