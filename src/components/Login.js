@@ -1,26 +1,31 @@
-// import React, { useState } from 'react';
-import { auth } from '../firebase';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import '../styles/Login.css'
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 const AuthComponent = () => {
     const [isLogin, setIsLogin] = useState(true); // State to toggle between login and signup
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate()
     const [error, setError] = useState('');
     const [userName, setUserName] = useState('')
+
+    const navigate = useNavigate()
 
     // Function to handle user sign-in
     const handleSignIn = async () => {
         console.log("Signing in with:", email, password);
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            localStorage.setItem('authToken', 'true');
-            localStorage.setItem('token', auth.currentUser.accessToken);
-            navigate('/dashboard'); // Redirect to dashboard after login
+            const response = await axios.post(`${API_URL}/auth/signin`, { email, password });
+            console.log(response);
+
+            if (response) {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('userId', response.data.user._id);
+                navigate('/dashboard'); // Redirect to dashboard after login   
+            }
         } catch (err) {
             setError(err.message);
         }
@@ -29,11 +34,10 @@ const AuthComponent = () => {
     // Function to handle user sign-up
     const handleSignUp = async () => {
         console.log("Signing up with:", email, password);
-
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
+            const response = await axios.post(`${API_URL}/auth/signup`, { userName, email, password });
             localStorage.setItem('userName', userName);
-            alert("Sign-up successful!");
+            navigate('/dashboard');
         } catch (err) {
             setError(err.message);
         }

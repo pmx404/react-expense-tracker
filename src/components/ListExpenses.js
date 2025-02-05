@@ -21,7 +21,8 @@ const ExpensesList = () => {
 
     const fetchExpenses = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/expense`);
+            const user = localStorage.getItem('userId')
+            const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
             setExpenses(response.data);
         } catch (error) {
             setError("Failed to fetch expenses.");

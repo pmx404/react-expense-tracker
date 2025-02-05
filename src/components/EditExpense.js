@@ -15,7 +15,8 @@ const EditExpense = ({ expense, onClose, fetchExpenses }) => {
         e.preventDefault();
 
         try {
-            const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date });
+            const user = localStorage.getItem('userId')
+            const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date, user });
             fetchExpenses();
             onClose(); // Close the edit modal
         } catch (err) {

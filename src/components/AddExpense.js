@@ -14,18 +14,19 @@ const AddExpense = ({ categories }) => {
     // Function to add an expense
     const addExpense = async (event) => {
         event.preventDefault(); // Prevent default form submission
+        const user = localStorage.getItem('userId')
 
         const newExpense = {
             title,
             amount: parseFloat(amount),
             category,
-            date
+            date,
+            user
         };
 
         try {
             // Make the API call
             const response = await axios.post(`${API_URL}/api/expense/`, newExpense);
-            console.log('Expense added:', response.data);
 
             // Update the local state with the new expense
             setExpenses([...expenses, response.data]);
