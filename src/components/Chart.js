@@ -2,6 +2,7 @@ import { Doughnut } from 'react-chartjs-2';
 import React, { useEffect, useState, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
 import axios from 'axios';
+import { Typography } from '@mui/material';
 
 Chart.register(...registerables);
 
@@ -13,13 +14,24 @@ const MyChart = () => {
 
     const fetchExpenses = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/expense`);
+            const user = localStorage.getItem('userId')
+            const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
 
             const groupedExpenses = response.data.reduce((acc, expense) => {
                 acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
                 return acc;
             }, {});
+            console.log(groupedExpenses.length);
 
+            if (!groupedExpenses.length) {
+                console.log('hi');
+
+                setChartData(
+                    <>
+                        <Typography> No data to display</Typography>
+                    </>
+                )
+            }
             const labels = Object.keys(groupedExpenses);
             const data = Object.values(groupedExpenses);
 
@@ -56,7 +68,10 @@ const MyChart = () => {
 
     return <>
         <h2 style={{ padding: '0px', margin: '0px' }} >Expense Chart</h2>
-        <Doughnut ref={chartRef} data={chartData} />
+        {console.log('chartRef', chartRef)}
+        {console.log('chartData', chartData.labels.length)}
+
+        {chartData.labels.length ? <Doughnut ref={chartRef} data={chartData} /> : <Typography sx={{ textAlign: 'center', padding: '30px' }}>No Data Available For Display</Typography>}
     </>;
 };
 

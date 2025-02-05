@@ -9,7 +9,6 @@ export const signup = async (req, res, next) => {
   const user = new User({ userName, email, password: hashedPassword });
   try {
     await user.save();
-    console.log('one');
 
     res.status(201).json({
       message: " User created successfully",
@@ -48,9 +47,6 @@ export const signIn = async (req, res, next) => {
       }
     );
     const { password: hashedPassword, ...userDto } = validUser._doc;
-
-    console.log(token);
-
 
     res
       .cookie("access_token", token, { httpOnly: true })

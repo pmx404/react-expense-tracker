@@ -20,21 +20,20 @@ const exepenseSchema = Joi.object({
   amount: Joi.number().required(),
   category: Joi.string().required(),
   date: Joi.string().required(),
-  // user: Joi.string().required(),
+  user: Joi.string().required(),
 });
 
 // create expense
 export const createExpense = async (req, res, next) => {
   const { error } = exepenseSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message });
-  // const { title, amount, category, date, user } = req.body;
-  const { title, amount, category, date } = req.body;
+  const { title, amount, category, date, user } = req.body;
   const expense = new Expense({
     title,
     amount,
     category,
     date,
-    //user, // Assuming user ID is passed
+    user, // Assuming user ID is passed
   });
   try {
     const newExpense = await expense.save();
@@ -47,7 +46,7 @@ export const createExpense = async (req, res, next) => {
 // GET all expenses
 export const getAllExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find();
+    const expenses = await Expense.find({ user: req.query.user });
     res.json(expenses);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -58,12 +57,13 @@ export const getAllExpenses = async (req, res) => {
 export const updateExpense = async (req, res) => {
   const { error } = exepenseSchema.validate(req.body);
   if (error) return res.status(400).json({ message: error.details[0].message });
-  const { title, amount, category, date } = req.body;
+  const { title, amount, category, date, user } = req.body;
 
   res.expense.title = title
   res.expense.amount = amount;
   res.expense.category = category;
   res.expense.date = date;
+  res.expense.user = user
 
   try {
     const updatedExpense = await res.expense.save();

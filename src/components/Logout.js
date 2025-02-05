@@ -8,6 +8,7 @@ const Logout = () => {
     const handleLogout = () => {
         // Remove user authentication details from local storage or context
         localStorage.removeItem('authToken'); // Example for removing a token
+        localStorage.removeItem('token')
         // You can also clear user state from a context or global state if using Redux or context API
 
         // Redirect to the login page or home page
