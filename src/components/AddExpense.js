@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/Dashboard.css'
 
-const AddExpense = ({ categories }) => {
+const AddExpense = ({ categories, fetchExpenses }) => {
     const [expenses, setExpenses] = useState([]); // State to store expenses
     const [title, setTitle] = useState(''); // State for expense 
     const [amount, setAmount] = useState(''); // State for expense amount
@@ -27,7 +27,7 @@ const AddExpense = ({ categories }) => {
         try {
             // Make the API call
             const response = await axios.post(`${API_URL}/api/expense/`, newExpense);
-
+            fetchExpenses()
             // Update the local state with the new expense
             setExpenses([...expenses, response.data]);
 
