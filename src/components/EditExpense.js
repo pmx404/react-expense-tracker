@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import '../styles/Dashboard.css'
 import { Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
 
 const EditExpense = ({ expense, onClose, fetchExpenses, categories }) => {
     const [title, setTitle] = useState(expense.title || "");
     const [amount, setAmount] = useState(expense.amount || "");
     const [category, setCategory] = useState(expense.category || "");
     const [date, setDate] = useState(expense.date || "");
-
     const API_URL = process.env.REACT_APP_API_URL;
+
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,7 +19,7 @@ const EditExpense = ({ expense, onClose, fetchExpenses, categories }) => {
         try {
             const user = localStorage.getItem('userId')
             const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date, user });
-            fetchExpenses();
+            dispatch(fetchExpenses())
             onClose(); // Close the edit modal
         } catch (err) {
             console.error("Error updating expense:", err.message);

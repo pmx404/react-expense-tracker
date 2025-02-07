@@ -13,8 +13,9 @@ import MyChart from './Chart';
 import Logout from './Logout';
 import ExpensesList from './ListExpenses';
 import Paper from '@mui/material/Paper';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { fetchExpenses } from "../redux/slices/expenseSlice";
 
 const categories = [
     { value: 'food', label: 'Food' },
@@ -59,27 +60,12 @@ const demoTheme = createTheme({
 });
 
 function DemoPageContent({ pathname }) {
-    const [expenses, setExpenses] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-
-    const API_URL = process.env.REACT_APP_API_URL;
-
-    const fetchExpenses = async () => {
-        try {
-            const user = localStorage.getItem("userId");
-            const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
-            setExpenses(response.data);
-        } catch (error) {
-            setError("Failed to fetch expenses.");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const dispatch = useDispatch();
+    const { data: expenses, loading, error } = useSelector((state) => state.expenses);
 
     useEffect(() => {
-        fetchExpenses();
-    }, []);
+        dispatch(fetchExpenses());
+    }, [dispatch]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
