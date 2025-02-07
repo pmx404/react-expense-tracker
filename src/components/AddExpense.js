@@ -18,6 +18,7 @@ const AddExpense = ({ categories, fetchExpenses }) => {
     const addExpense = async (event) => {
         event.preventDefault(); // Prevent default form submission
         const user = localStorage.getItem('userId')
+        const token = localStorage.getItem('token')
 
         const newExpense = {
             title,
@@ -29,7 +30,7 @@ const AddExpense = ({ categories, fetchExpenses }) => {
 
         try {
             // Make the API call
-            const response = await axios.post(`${API_URL}/api/expense/`, newExpense);
+            const response = await axios.post(`${API_URL}/api/expense/`, newExpense, { headers: { 'Authorization': `Bearer ${token}` } });
             dispatch(fetchExpenses())
 
             // Clear the input fields
@@ -84,8 +85,9 @@ const AddExpense = ({ categories, fetchExpenses }) => {
                     onChange={(e) => setDate(e.target.value)}
                     required
                 />
-                <button onClick={() => alert('Expense added')}
-                    {...loading ? 'Adding...' : 'Add Expense'} className='submit-btn' type="submit">Add Expense</button>
+                <button className="submit-btn"
+                    type="submit"
+                    disabled={loading}>Add Expense</button>
             </form>
 
             {/* Error message */}

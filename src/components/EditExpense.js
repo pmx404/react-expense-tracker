@@ -17,8 +17,9 @@ const EditExpense = ({ expense, onClose, fetchExpenses, categories }) => {
         e.preventDefault();
 
         try {
+            const token = localStorage.getItem('token')
             const user = localStorage.getItem('userId')
-            const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date, user });
+            const response = await axios.post(`${API_URL}/api/expense/${expense._id}`, { title, amount, category, date, user }, { headers: { 'Authorization': `Bearer ${token}` } });
             dispatch(fetchExpenses())
             onClose(); // Close the edit modal
         } catch (err) {
