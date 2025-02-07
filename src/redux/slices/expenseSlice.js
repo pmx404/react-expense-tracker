@@ -5,7 +5,8 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchExpenses = createAsyncThunk("expenses/fetchExpenses", async () => {
     const user = localStorage.getItem("userId");
-    const response = await axios.get(`${API_URL}/api/expense?user=${user}`);
+    const token = localStorage.getItem('token')
+    const response = await axios.get(`${API_URL}/api/expense?user=${user}`, { headers: { 'Authorization': `Bearer ${token}` } });
     return response.data;
 });
 

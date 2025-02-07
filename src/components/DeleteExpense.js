@@ -8,7 +8,8 @@ const DeleteExpense = ({ expense, onClose, fetchExpenses }) => {
     const dispatch = useDispatch()
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`${API_URL}/api/expense/${expense._id}`)
+            const token = localStorage.getItem('token')
+            const response = await axios.delete(`${API_URL}/api/expense/${expense._id}`, { headers: { 'Authorization': `Bearer ${token}` } })
             dispatch(fetchExpenses())
             onClose(); // Close the delete confirmation
         } catch (err) {
