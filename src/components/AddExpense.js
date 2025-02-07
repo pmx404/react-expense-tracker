@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import '../styles/Dashboard.css'
+import { useDispatch, useSelector } from 'react-redux';
 
 const AddExpense = ({ categories, fetchExpenses }) => {
-    const [expenses, setExpenses] = useState([]); // State to store expenses
     const [title, setTitle] = useState(''); // State for expense 
     const [amount, setAmount] = useState(''); // State for expense amount
     const [category, setCategory] = useState(''); // State for expense category
     const [date, setDate] = useState(''); // State for expense date
     const [error, setError] = useState(null); // State for errors
     const API_URL = process.env.REACT_APP_API_URL;
+
+    const dispatch = useDispatch()
+    const { loading, error: reduxError } = useSelector(state => state.expenses)
 
     // Function to add an expense
     const addExpense = async (event) => {
@@ -27,9 +30,7 @@ const AddExpense = ({ categories, fetchExpenses }) => {
         try {
             // Make the API call
             const response = await axios.post(`${API_URL}/api/expense/`, newExpense);
-            fetchExpenses()
-            // Update the local state with the new expense
-            setExpenses([...expenses, response.data]);
+            dispatch(fetchExpenses())
 
             // Clear the input fields
             setTitle('');
@@ -83,11 +84,13 @@ const AddExpense = ({ categories, fetchExpenses }) => {
                     onChange={(e) => setDate(e.target.value)}
                     required
                 />
-                <button onClick={() => alert('Expense added')} className='submit-btn' type="submit">Add Expense</button>
+                <button onClick={() => alert('Expense added')}
+                    {...loading ? 'Adding...' : 'Add Expense'} className='submit-btn' type="submit">Add Expense</button>
             </form>
 
             {/* Error message */}
             {error && <p style={{ color: 'red' }}>{error}</p>}
+            {reduxError && <p style={{ color: 'red' }}>{reduxError}</p>}
         </div>
     );
 };
