@@ -4,6 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import '../styles/Dashboard.css';
 import EditExpense from './EditExpense';
 import DeleteExpense from './DeleteExpense';
+import TextField from '@mui/material/TextField';
+import SearchIcon from '@mui/icons-material/Search';
+import { searchExpense } from '../redux/slices/expenseSlice';
+import { useDispatch } from 'react-redux';
+import MenuItem from '@mui/material/MenuItem';
+import { Select, Button } from '@mui/material';
 
 const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
 
@@ -12,6 +18,11 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
 
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
     const [selectedDeleteExpenseId, setSelectedDeleteExpenseId] = useState(null);
+
+    const [searchParam, setSearchParam] = useState('');
+    const [searchValue, setSearchValue] = useState('')
+
+    const dispatch = useDispatch()
 
     const getExpenseById = (id) => {
         return expenses.find(el => el._id === id)
@@ -38,9 +49,49 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
         setSelectedDeleteExpenseId(null);
     };
 
+    const handleSearch = () => {
+        dispatch(searchExpense({ searchParam, searchValue }));
+    };
+
     return (
         <div className="popup-overlay">
             <h2>Expenses List</h2>
+
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", padding: "10px" }}>
+                <Select
+                    value={searchParam}
+                    onChange={(e) => setSearchParam(e.target.value)}
+                    displayEmpty
+                    sx={{ width: "150px" }}
+                    size="small"
+                >
+                    <MenuItem value="" disabled>
+                        Select Category
+                    </MenuItem>
+                    {categories.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <TextField
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    label="Search Value"
+                    variant="outlined"
+                    size="small"
+                    sx={{ width: "200px" }}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSearch}
+                    sx={{ minWidth: "40px", height: "40px", display: "flex", alignItems: "center" }}
+                >
+                    <SearchIcon fontSize="small" />
+                </Button>
+            </div>
+
             <table className="expense-table">
                 <thead>
                     <tr>
@@ -53,7 +104,7 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {expenses.map((expense, index) => (
+                    {expenses.length ? expenses.map((expense, index) => (
                         <tr key={expense._id}>
 
                             <td>{index + 1}</td>
@@ -70,29 +121,39 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
                                 </button>
                             </td>
                         </tr>
-                    ))}
+                    )) : (
+                        <tr>
+                            <td colSpan="6" style={{ textAlign: "center", padding: "10px" }}>
+                                No Data Available For Display
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
-            {isPopupOpen && (
-                <div className="popup">
-                    <EditExpense
-                        expense={getExpenseById(selectedExpenseId)}
-                        fetchExpenses={fetchExpenses}
-                        categories={categories}
-                        onClose={closePopup}
-                    />
-                </div>
-            )}
-            {isDeletePopupOpen && (
-                <div className="popup">
-                    <DeleteExpense
-                        expense={getExpenseById(selectedDeleteExpenseId)}
-                        fetchExpenses={fetchExpenses}
-                        onClose={closeDeletePopup}
-                    />
-                </div>
-            )}
-        </div>
+            {
+                isPopupOpen && (
+                    <div className="popup">
+                        <EditExpense
+                            expense={getExpenseById(selectedExpenseId)}
+                            fetchExpenses={fetchExpenses}
+                            categories={categories}
+                            onClose={closePopup}
+                        />
+                    </div>
+                )
+            }
+            {
+                isDeletePopupOpen && (
+                    <div className="popup">
+                        <DeleteExpense
+                            expense={getExpenseById(selectedDeleteExpenseId)}
+                            fetchExpenses={fetchExpenses}
+                            onClose={closeDeletePopup}
+                        />
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

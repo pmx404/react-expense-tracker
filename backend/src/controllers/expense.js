@@ -87,3 +87,18 @@ export const deleteExpense = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 }
+
+export const getExpenseBySearchCategory = async (req, res) => {
+  try {
+    let expenses
+
+    const filter = { title: req.query.searchVal };
+    if (req.query.searchParam) {
+      filter.category = req.query.searchParam;
+    }
+    expenses = await Expense.find(filter);
+    res.json(expenses);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

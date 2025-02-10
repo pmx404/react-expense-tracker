@@ -10,6 +10,13 @@ export const fetchExpenses = createAsyncThunk("expenses/fetchExpenses", async ()
     return response.data;
 });
 
+export const searchExpense = createAsyncThunk("expenses/searchExpense", async ({ searchParam, searchValue }) => {
+    const token = localStorage.getItem('token')
+
+    const response = await axios.get(`${API_URL}/api/expense/search?searchParam=${searchParam}&searchVal=${searchValue}`, { headers: { 'Authorization': `Bearer ${token}` } });
+    return response.data;
+});
+
 const expenseSlice = createSlice({
     name: "expenses",
     initialState: {
@@ -41,6 +48,19 @@ const expenseSlice = createSlice({
                 state.data = action.payload;
             })
             .addCase(fetchExpenses.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            });
+
+        builder
+            .addCase(searchExpense.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(searchExpense.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+            })
+            .addCase(searchExpense.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });
