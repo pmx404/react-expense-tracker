@@ -150,6 +150,7 @@ function DashboardLayoutBasic(props) {
         >
 
             <DashboardLayout
+                defaultSidebarCollapsed
                 slots={{
                     toolbarActions: Logout,
                 }}>
