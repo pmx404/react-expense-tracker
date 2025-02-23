@@ -4,12 +4,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import '../styles/Dashboard.css';
 import EditExpense from './EditExpense';
 import DeleteExpense from './DeleteExpense';
-import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import { searchExpense } from '../redux/slices/expenseSlice';
 import { useDispatch } from 'react-redux';
 import MenuItem from '@mui/material/MenuItem';
-import { Select, Button } from '@mui/material';
+import { Select, Button, TextField } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
 
@@ -53,6 +53,10 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
         dispatch(searchExpense({ searchParam, searchValue }));
     };
 
+    const handleReset = () => {
+        dispatch(fetchExpenses());
+    };
+
     return (
         <div className="popup-overlay">
             <h2>Expenses List</h2>
@@ -89,6 +93,14 @@ const ExpensesList = ({ expenses, fetchExpenses, categories }) => {
                     sx={{ minWidth: "40px", height: "40px", display: "flex", alignItems: "center" }}
                 >
                     <SearchIcon fontSize="small" />
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleReset}
+                    sx={{ minWidth: "40px", height: "40px", display: "flex", alignItems: "center" }}
+                >
+                    <RefreshIcon fontSize="small" />
                 </Button>
             </div>
 
